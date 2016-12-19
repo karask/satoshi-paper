@@ -9,16 +9,16 @@ www.bitcoin.org
 payments to be sent directly from one party to another without going through a
 financial institution. Digital signatures provide part of the solution, but the main
 benefits are lost if a trusted third party is still required to prevent double-spending.
-We propose a solution to the double-spendmg problem usmg a peer-to-peer network.
-The network timestamps transactions by hashmg them into an ongomg chain of
-hash-based proof-of-work, forming a record that cannot be changed without redomg
+We propose a solution to the double-spending problem using a peer-to-peer network.
+The network timestamps transactions by hashing them into an ongoing chain of
+hash-based proof-of-work, forming a record that cannot be changed without redoing
 the proof-of-work. The longest chain not only serves as proof of the sequence of
 events witnessed, but proof that it came from the largest pool of CPU power. As
-long as a majority of CPU power is controlled by nodes that are not cooperatmg to
-attack the network, they'11 generate the longest cham and outpace attackers. The
+long as a majority of CPU power is controlled by nodes that are not cooperating to
+attack the network, they'll generate the longest chain and outpace attackers. The
 network itself requires minimal structure. Messages are broadcast on a best effort
 basis, and nodes can leave and rejoin the network at will, accepting the longest
-proof-of-work chain as proof of what happened while they were gone.
+proof-of-work chain as proof of what happened while they were gone
 
 ## Introduction
 Commerce on the Internet has come to rely almost exclusively on financial institutions serving as
@@ -32,7 +32,7 @@ services. With the possibility of reversal, the need for trust spreads. Merchant
 be wary of their customers, hassling them for more information than they would otherwise need.
 A certain percentage of fraud is accepted as unavoidable. These costs and payment uncertainties
 can be avoided in person by using physical currency, but no mechanism exists to make payments
-over a communications channel without a trusted party.
+over a communications channel without a trusted party
 
 What is needed is an electronic payment system based on cryptographic proof instead of trust,
 allowing any two willing parties to transact directly with each other without the need for a trusted
@@ -58,8 +58,8 @@ issue a new coin, and only coins issued directly from the mint are trusted not t
 The problem with this solution is that the fate of the entire money system depends on the
 company running the mint, with every transaction having to go through them, just like a bank.
 
-We need a way for the payee to know that the previous owners did not sign any earlier transactions. 
-For our purposes, the earliest transaction is the one that counts, so we don't care
+We need a way for the payee to know that the previous owners did not sign any earlier
+transactions. For our purposes, the earliest transaction is the one that counts, so we don't care
 about later attempts to double-spend. The only way to confirm the absence of a transaction is to
 be aware of all transactions. In the mint based model, the mint was aware of all transactions and
 decided which arrived first. To accomplish this without a trusted party, transactions must be
@@ -77,8 +77,8 @@ its hash, forming a chain, with each additional timestamp reinforcing the ones b
 ![timestamp server](timestamp.PNG)
 
 ## Proof-of-Work
-To implement a distributed timestamp server on a peer-to-peer basis, we will need to use a proofof-
-work system similar to Adam Back's Hashcash [6], rather than newspaper or Usenet posts.
+To implement a distributed timestamp server on a peer-to-peer basis, we will need to use a proof-of-work
+system similar to Adam Back's Hashcash [6], rather than newspaper or Usenet posts.
 The proof-of-work involves scanning for a value that when hashed, such as with SHA-256, the
 hash begins with a number of zero bits. The average work required is exponential in the number
 of zero bits required and can be verified by executing a single hash.
@@ -87,7 +87,7 @@ For our timestamp network, we implement the proof-of-work by incrementing a nonc
 block until a value is found that gives the block's hash the required zero bits. Once the CPU
 effort has been expended to make it satisfy the proof-of-work, the block cannot be changed
 without redoing the work. As later blocks are chained after it, the work to change the block
-would include redoing all the blocks after it.
+would include redoing all the blocks after it
 
 ![pow](proof-of-work.PNG)
 
@@ -119,8 +119,8 @@ chain, using the hash of the accepted block as the previous hash.
 Nodes always consider the longest chain to be the correct one and will keep working on
 extending it. If two nodes broadcast different versions of the next block simultaneously, some
 nodes may receive one or the other first. In that case, they work on the first one they received,
-but save the other branch in case it becomes longer. The tie will be broken when the next proofof-
-work is found and one branch becomes longer; the nodes that were working on the other
+but save the other branch in case it becomes longer. The tie will be broken when the next proof-of-work
+is found and one branch becomes longer; the nodes that were working on the other
 branch will then switch to the longer one.
 
 New transaction broadcasts do not necessarily need to reach all nodes. As long as they reach
@@ -186,7 +186,7 @@ Although it would be possible to handle coins individually, it would be unwieldy
 separate transaction for every cent in a transfer. To allow value to be split and combined,
 transactions contain multiple inputs and outputs. Normally there will be either a single input
 from a larger previous transaction or multiple inputs combining smaller amounts, and at most two
-outputs: one for the payment, and one returning the change, if any, back to the sender.
+outputs: one for the payment, and one returning the change, if any, back to the sender. 
 
 ![combining-splitting](combining-splitting.PNG)
 
@@ -243,7 +243,7 @@ We now consider how long the recipient of a new transaction needs to wait before
 sufficiently certain the sender can't change the transaction. We assume the sender is an attacker
 who wants to make the recipient believe he paid him for a while, then switch it to pay back to
 himself after some time has passed. The receiver will be alerted when that happens, but the
-sender hopes it will be too late.
+sender hopes it will be too late
 
 The receiver generates a new key pair and gives the public key to the sender shortly before
 signing. This prevents the sender from preparing a chain of blocks ahead of time by working on
