@@ -1,8 +1,8 @@
 
 # Bitcoin: A Peer-to-Peer Electronic Cash System
 
-Satoshi Nakamoto  
-satoshin@gmx.com  
+Satoshi Nakamoto
+satoshin@gmx.com
 www.bitcoin.org
 
 **Abstract.** A purely peer-to-peer version of electronic cash would allow online
@@ -49,7 +49,7 @@ next by digitally signing a hash of the previous transaction and the public key 
 and adding these to the end of the coin. A payee can verify the signatures to verify the chain of
 ownership.
 
-![transactions](transactions.PNG)
+![transactions](/img/transactions.png)
 
 The problem of course is the payee can't verify that one of the owners did not double-spend
 the coin. A common solution is to introduce a trusted central authority, or mint, that checks every
@@ -74,7 +74,7 @@ newspaper or Usenet post [2-5]. The timestamp proves that the data must have exi
 time, obviously, in order to get into the hash. Each timestamp includes the previous timestamp in
 its hash, forming a chain, with each additional timestamp reinforcing the ones before it.
 
-![timestamp server](timestamp.PNG)
+![timestamp server](/img/timestamp.png)
 
 ## Proof-of-Work
 To implement a distributed timestamp server on a peer-to-peer basis, we will need to use a proof-of-work
@@ -89,7 +89,7 @@ effort has been expended to make it satisfy the proof-of-work, the block cannot 
 without redoing the work. As later blocks are chained after it, the work to change the block
 would include redoing all the blocks after it
 
-![pow](proof-of-work.PNG)
+![pow](/img/proof-of-work.png)
 
 The proof-of-work also solves the problem of determining representation in majority decision
 making. If the majority were based on one-IP-address-one-vote, it could be subverted by anyone
@@ -154,7 +154,7 @@ transactions are hashed in a Merkle Tree [7][2][5], with only the root included 
 Old blocks can then be compacted by stubbing off branches of the tree. The interior hashes do
 not need to be stored.
 
-![disk](reclaiming-disk.PNG)
+![disk](/img/reclaiming-disk.png)
 
 A block header with no transactions would be about 80 bytes. If we suppose blocks are
 generated every 10 minutes, 80 bytes * 6 * 24 * 365 = 4.2MB per year. With computer systems
@@ -170,7 +170,7 @@ linking the transaction to the block it's timestamped in. He can't check the tra
 himself, but by linking it to a place in the chain, he can see that a network node has accepted it,
 and blocks added after it further confirm the network has accepted it.
 
-![spv](spv.PNG)
+![spv](/img/spv.png)
 
 As such, the verification is reliable as long as honest nodes control the network, but is more
 vulnerable if the network is overpowered by an attacker. While network nodes can verify
@@ -188,7 +188,7 @@ transactions contain multiple inputs and outputs. Normally there will be either 
 from a larger previous transaction or multiple inputs combining smaller amounts, and at most two
 outputs: one for the payment, and one returning the change, if any, back to the sender. 
 
-![combining-splitting](combining-splitting.PNG)
+![combining-splitting](/img/combining-splitting.png)
 
 It should be noted that fan-out, where a transaction depends on several transactions, and those
 transactions depend on many more, is not a problem here. There is never the need to extract a
@@ -203,7 +203,7 @@ an amount to someone else, but without information linking the transaction to an
 similar to the level of information released by stock exchanges, where the time and size of
 individual trades, the "tape", is made public, but without telling who the parties were.
 
-![privacy](privacy.PNG)
+![privacy](/img/privacy.png)
 
 As an additional firewall, a new key pair should be used for each transaction to keep them
 from being linked to a common owner. Some linking is still unavoidable with multi-input
@@ -233,7 +233,7 @@ p = probability an honest node finds the next block
 q = probability the attacker finds the next block  
 q<sub>z</sub> = probability the attacker will ever catch up from z blocks behind
 
-![eq1](eq1.PNG)
+![eq1](/img/eq1.png)
 
 Given our assumption that p > q, the probability drops exponentially as the number of blocks the
 attacker has to catch up with increases. With the odds against him, if he doesn't make a lucky
@@ -256,16 +256,16 @@ linked after it. He doesn't know the exact amount of progress the attacker has m
 assuming the honest blocks took the average expected time per block, the attacker's potential
 progress will be a Poisson distribution with expected value:
 
-![eq2](eq2.PNG)
+![eq2](/img/eq2.png)
 
 To get the probability the attacker could still catch up now, we multiply the Poisson density for
 each amount of progress he could have made by the probability he could catch up from that point:
 
-![eq3](eq3.PNG)
+![eq3](/img/eq3.png)
 
 Rearranging to avoid summing the infinite tail of the distribution...
 
-![eq4](eq4.PNG)
+![eq4](/img/eq4.png)
 
 Converting to C code...
 
