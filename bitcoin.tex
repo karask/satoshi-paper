@@ -1,34 +1,46 @@
-\section{Bitcoin: A Peer-to-Peer Electronic Cash
-System}\label{bitcoin-a-peer-to-peer-electronic-cash-system}
+\documentclass[a4paper, 10pt]{article}
+%encoding
+%---------------------------------------------------------
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+%----------------------------------------------------------------------
+\usepackage{geometry}
+\geometry{left=3cm,right=3cm,top=2.5cm,bottom=2.5cm}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage{graphicx}
+\graphicspath{ {img/} }
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{verbatim}
+\usepackage[shortlabels]{enumitem}
+\usepackage[sorting=none]{biblatex}
+\bibliography{refs}
 
-\begin{description}
-\item[author]
-Satoshi Nakamoto
-\item[email]
-\href{mailto:satoshin@gmx.com}{\nolinkurl{satoshin@gmx.com}}
-\item[site]
-\url{http://www.bitcoin.org/}
-\end{description}
+\begin{document}
+\renewcommand{\abstractname}{\vspace{-\baselineskip}}
 
-\textbf{Abstract.} A purely peer-to-peer version of electronic cash
-would allow online payments to be sent directly from one party to
+\title{Bitcoin: A Peer-to-Peer Electronic Cash System}
+\author{Satoshi Nakamoto \\ 
+\href{mailto:satoshin@gmx.com}{satoshin@gmx.com}\\ \url{http://www.bitcoin.org/}}
+\date{}
+
+
+\maketitle
+\begin{center}
+\parbox{0.8\linewidth}{\noindent \textbf{Abstract.} A purely peer-to-peer version of electronic cash would allow online payments to be sent directly from one party to
 another without going through a financial institution. Digital
-signatures provide part of the solution, but the main benefits are lost
-if a trusted third party is still required to prevent double-spending.
+signatures provide part of the solution, but the main benefits are lost if a trusted third party is still required to prevent double-spending.
 We propose a solution to the double-spending problem using a
-peer-to-peer network. The network timestamps transactions by hashing
-them into an ongoing chain of hash-based proof-of-work, forming a record
-that cannot be changed without redoing the proof-of-work. The longest
-chain not only serves as proof of the sequence of events witnessed, but
-proof that it came from the largest pool of CPU power. As long as a
-majority of CPU power is controlled by nodes that are not cooperating to
-attack the network, they'll generate the longest chain and outpace
-attackers. The network itself requires minimal structure. Messages are
-broadcast on a best effort basis, and nodes can leave and rejoin the
-network at will, accepting the longest proof-of-work chain as proof of
-what happened while they were gone.
+peer-to-peer network. The network timestamps transactions by hashing them into an ongoing chain of hash-based proof-of-work, forming a record that cannot be changed without redoing the proof-of-work. The longest chain not only serves as proof of the sequence of events witnessed, but proof that it came from the largest pool of CPU power. As long as a majority of CPU power is controlled by nodes that are not cooperating to attack the network, they'll generate the longest chain and outpace attackers. The network itself requires minimal structure. Messages are broadcast on a best effort basis, and nodes can leave and rejoin the network at will, accepting the longest proof-of-work chain as proof of what happened while they were gone.}
+\end{center}
 
-\subsection{Introduction}\label{introduction}
+\
+
+\section{Introduction}\label{introduction}
 
 Commerce on the Internet has come to rely almost exclusively on
 financial institutions serving as trusted third parties to process
@@ -59,7 +71,9 @@ order of transactions. The system is secure as long as honest nodes
 collectively control more CPU power than any cooperating group of
 attacker nodes.
 
-\subsection{Transactions}\label{transactions}
+\newpage
+
+\section{Transactions}\label{transactions}
 
 We define an electronic coin as a chain of digital signatures. Each
 owner transfers the coin to the next by digitally signing a hash of the
@@ -67,102 +81,44 @@ previous transaction and the public key of the next owner and adding
 these to the end of the coin. A payee can verify the signatures to
 verify the chain of ownership.
 
-\begin{figure}
+\begin{figure}[!h]
 \centering
-\includegraphics{transactions.png}
-\caption{}
+\includegraphics[width=0.75\linewidth]{transactions.png}
 \end{figure}
 
-The problem of course is the payee can't verify that one of the owners
-did not double-spend the coin. A common solution is to introduce a
-trusted central authority, or mint, that checks every transaction for
-double spending. After each transaction, the coin must be returned to
-the mint to issue a new coin, and only coins issued directly from the
-mint are trusted not to be double-spent. The problem with this solution
-is that the fate of the entire money system depends on the company
-running the mint, with every transaction having to go through them, just
-like a bank.
+The problem of course is the payee can't verify that one of the owners did not double-spend the coin. A common solution is to introduce a trusted central authority, or mint, that checks every transaction for double spending. After each transaction, the coin must be returned to the mint to issue a new coin, and only coins issued directly from the mint are trusted not to be double-spent. The problem with this solution is that the fate of the entire money system depends on the company running the mint, with every transaction having to go through them, just like a bank.
 
 We need a way for the payee to know that the previous owners did not
 sign any earlier transactions. For our purposes, the earliest
 transaction is the one that counts, so we don't care about later
 attempts to double-spend. The only way to confirm the absence of a
-transaction is to be aware of all transactions. In the mint based model,
-the mint was aware of all transactions and decided which arrived first.
+transaction is to be aware of all transactions. In the mint based model, the mint was aware of all transactions and decided which arrived first.
 To accomplish this without a trusted party, transactions must be
-publicly announced\footnote{\begin{enumerate}
-  \def\labelenumi{\Alph{enumi}.}
-  \setcounter{enumi}{22}
-  \tightlist
-  \item
-    Dai, ``b-money,'' \url{http://www.weidai.com/bmoney.txt}, 1998.
-  \end{enumerate}}, and we need a system for participants to agree on a
-single history of the order in which they were received. The payee needs
-proof that at the time of each transaction, the majority of nodes agreed
-it was the first received.
+publicly announced\cite{dai98}, and we need a system for participants to agree on a single history of the order in which they were received. The payee needs proof that at the time of each transaction, the majority of nodes agreed it was the first received.
 
-\subsection{Timestamp Server}\label{timestamp-server}
+\section{Timestamp Server}\label{timestamp-server}
 
 The solution we propose begins with a timestamp server. A timestamp
 server works by taking a hash of a block of items to be timestamped and
 widely publishing the hash, such as in a newspaper or Usenet
-post\footnote{\begin{enumerate}
-  \def\labelenumi{\Alph{enumi}.}
-  \setcounter{enumi}{7}
-  \tightlist
-  \item
-    Massias, X.S. Avila, and J.-J. Quisquater, ``Design of a secure
-    timestamping service with minimal trust requirements,'' In 20th
-    Symposium on Information Theory in the Benelux, May 1999.
-  \end{enumerate}}\footnote{\begin{enumerate}
-  \def\labelenumi{\Alph{enumi}.}
-  \setcounter{enumi}{18}
-  \tightlist
-  \item
-    Haber, W.S. Stornetta, ``How to time-stamp a digital document,'' In
-    Journal of Cryptology, vol 3, no 2, pages 99-111, 1991.
-  \end{enumerate}}\footnote{\begin{enumerate}
-  \def\labelenumi{\Alph{enumi}.}
-  \setcounter{enumi}{3}
-  \tightlist
-  \item
-    Bayer, S. Haber, W.S. Stornetta, ``Improving the efficiency and
-    reliability of digital time-stamping,'' In Sequences II: Methods in
-    Communication, Security and Computer Science, pages 329-334, 1993.
-  \end{enumerate}}\footnote{\begin{enumerate}
-  \def\labelenumi{\Alph{enumi}.}
-  \setcounter{enumi}{18}
-  \tightlist
-  \item
-    Haber, W.S. Stornetta, ``Secure names for bit-strings,'' In
-    Proceedings of the 4th ACM Conference on Computer and Communications
-    Security, pages 28-35, April 1997.
-  \end{enumerate}}. The timestamp proves that the data must have existed
+post\cite{mas99}\cite{hab90}\cite{bay93}\cite{hab97}. The timestamp proves that the data must have existed
 at the time, obviously, in order to get into the hash. Each timestamp
 includes the previous timestamp in its hash, forming a chain, with each
 additional timestamp reinforcing the ones before it.
 
-\begin{figure}
+\begin{figure}[!h]
 \centering
-\includegraphics{timestamp.png}
-\caption{}
+\includegraphics[width=0.75\linewidth]{timestamp.png}
 \end{figure}
 
-\subsection{Proof-of-Work}\label{proof-of-work}
+\section{Proof-of-Work}\label{proof-of-work}
 
 To implement a distributed timestamp server on a peer-to-peer basis, we
 will need to use a proof-of-work system similar to Adam Back's Hashcash
-\footnote{\begin{enumerate}
-  \def\labelenumi{\Alph{enumi}.}
-  \tightlist
-  \item
-    Back, ``Hashcash - a denial of service counter-measure,''
-    \url{http://www.hashcash.org/papers/hashcash.pdf}, 2002.
-  \end{enumerate}}, rather than newspaper or Usenet posts. The
+\cite{bac02}, rather than newspaper or Usenet posts. The
 proof-of-work involves scanning for a value that when hashed, such as
 with SHA-256, the hash begins with a number of zero bits. The average
-work required is exponential in the number of zero bits required and can
-be verified by executing a single hash.
+work required is exponential in the number of zero bits required and can be verified by executing a single hash.
 
 For our timestamp network, we implement the proof-of-work by
 incrementing a nonce in the block until a value is found that gives the
@@ -172,37 +128,26 @@ changed without redoing the work. As later blocks are chained after it,
 the work to change the block would include redoing all the blocks after
 it
 
-\begin{figure}
+\begin{figure}[!h]
 \centering
-\includegraphics{proof-of-work.png}
-\caption{}
+\includegraphics[width=0.75\linewidth]{proof-of-work.png}
 \end{figure}
 
 The proof-of-work also solves the problem of determining representation
 in majority decision making. If the majority were based on
 one-IP-address-one-vote, it could be subverted by anyone able to
 allocate many IPs. Proof-of-work is essentially one-CPU-one-vote. The
-majority decision is represented by the longest chain, which has the
-greatest proof-of-work effort invested in it. If a majority of CPU power
-is controlled by honest nodes, the honest chain will grow the fastest
-and outpace any competing chains. To modify a past block, an attacker
-would have to redo the proof-of-work of the block and all blocks after
-it and then catch up with and surpass the work of the honest nodes. We
-will show later that the probability of a slower attacker catching up
+majority decision is represented by the longest chain, which has the greatest proof-of-work effort invested in it. If a majority of CPU power is controlled by honest nodes, the honest chain will grow the fastest and outpace any competing chains. To modify a past block, an attacker would have to redo the proof-of-work of the block and all blocks after
+it and then catch up with and surpass the work of the honest nodes. We will show later that the probability of a slower attacker catching up
 diminishes exponentially as subsequent blocks are added.
 
-To compensate for increasing hardware speed and varying interest in
-running nodes over time, the proof-of-work difficulty is determined by a
-moving average targeting an average number of blocks per hour. If
-they're generated too fast, the difficulty increases.
+To compensate for increasing hardware speed and varying interest in running nodes over time, the proof-of-work difficulty is determined by a moving average targeting an average number of blocks per hour. If they're generated too fast, the difficulty increases.
 
-\subsection{Network}\label{network}
+\section{Network}\label{network}
 
 The steps to run the network are as follows:
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
+\begin{enumerate}[1)]
 \item
   New transactions are broadcast to all nodes.
 \item
@@ -221,22 +166,13 @@ The steps to run the network are as follows:
   previous hash.
 \end{enumerate}
 
-Nodes always consider the longest chain to be the correct one and will
-keep working on extending it. If two nodes broadcast different versions
-of the next block simultaneously, some nodes may receive one or the
-other first. In that case, they work on the first one they received, but
-save the other branch in case it becomes longer. The tie will be broken
-when the next proof-of-work is found and one branch becomes longer; the
-nodes that were working on the other branch will then switch to the
-longer one.
+Nodes always consider the longest chain to be the correct one and will keep working on extending it. If two nodes broadcast different versions of the next block simultaneously, some nodes may receive one or the other first. In that case, they work on the first one they received, but save the other branch in case it becomes longer. The tie will be broken when the next proof-of-work is found and one branch becomes longer; the
+nodes that were working on the other branch will then switch to the longer one.
 
 New transaction broadcasts do not necessarily need to reach all nodes.
-As long as they reach many nodes, they will get into a block before
-long. Block broadcasts are also tolerant of dropped messages. If a node
-does not receive a block, it will request it when it receives the next
-block and realizes it missed one.
+As long as they reach many nodes, they will get into a block before long. Block broadcasts are also tolerant of dropped messages. If a node does not receive a block, it will request it when it receives the next block and realizes it missed one.
 
-\subsection{Incentive}\label{incentive}
+\section{Incentive}\label{incentive}
 
 By convention, the first transaction in a block is a special transaction
 that starts a new coin owned by the creator of the block. This adds an
@@ -262,37 +198,18 @@ it more profitable to play by the rules, such rules that favour him with
 more new coins than everyone else combined, than to undermine the system
 and the validity of his own wealth.
 
-\subsection{Reclaiming Disk Space}\label{reclaiming-disk-space}
+\section{Reclaiming Disk Space}\label{reclaiming-disk-space}
 
 Once the latest transaction in a coin is buried under enough blocks, the
 spent transactions before it can be discarded to save disk space. To
 facilitate this without breaking the block's hash, transactions are
-hashed in a Merkle Tree\footnote{R.C. Merkle, ``Protocols for public key
-  cryptosystems,'' In Proc. 1980 Symposium on Security and Privacy, IEEE
-  Computer Society, pages 122-133, April 1980.}\footnote{\begin{enumerate}
-  \def\labelenumi{\Alph{enumi}.}
-  \setcounter{enumi}{7}
-  \tightlist
-  \item
-    Massias, X.S. Avila, and J.-J. Quisquater, ``Design of a secure
-    timestamping service with minimal trust requirements,'' In 20th
-    Symposium on Information Theory in the Benelux, May 1999.
-  \end{enumerate}}\footnote{\begin{enumerate}
-  \def\labelenumi{\Alph{enumi}.}
-  \setcounter{enumi}{18}
-  \tightlist
-  \item
-    Haber, W.S. Stornetta, ``Secure names for bit-strings,'' In
-    Proceedings of the 4th ACM Conference on Computer and Communications
-    Security, pages 28-35, April 1997.
-  \end{enumerate}}, with only the root included in the block's hash. Old
+hashed in a Merkle Tree\cite{mer80}\cite{mas99}\cite{hab97}, with only the root included in the block's hash. Old
 blocks can then be compacted by stubbing off branches of the tree. The
 interior hashes do not need to be stored.
 
-\begin{figure}
+\begin{figure}[!h]
 \centering
-\includegraphics{reclaiming-disk.png}
-\caption{}
+\includegraphics[width=0.75\linewidth]{reclaiming-disk.png}
 \end{figure}
 
 A block header with no transactions would be about 80 bytes. If we
@@ -302,7 +219,9 @@ as of 2008, and Moore's Law predicting current growth of 1.2GB per year,
 storage should not be a problem even if the block headers must be kept
 in memory.
 
-\subsection{Simplified Payment
+\newpage
+
+\section{Simplified Payment
 Verification}\label{simplified-payment-verification}
 
 It is possible to verify payments without running a full network node. A
@@ -314,10 +233,10 @@ the transaction for himself, but by linking it to a place in the chain,
 he can see that a network node has accepted it, and blocks added after
 it further confirm the network has accepted it.
 
-\begin{figure}
+\begin{figure}[!h]
 \centering
-\includegraphics{spv.png}
-\caption{}
+\includegraphics[width=\linewidth]{spv.png}
+
 \end{figure}
 
 As such, the verification is reliable as long as honest nodes control
@@ -332,7 +251,7 @@ confirm the inconsistency. Businesses that receive frequent payments
 will probably still want to run their own nodes for more independent
 security and quicker verification.
 
-\subsection{Combining and Splitting
+\section{Combining and Splitting
 Value}\label{combining-and-splitting-value}
 
 Although it would be possible to handle coins individually, it would be
@@ -343,10 +262,10 @@ larger previous transaction or multiple inputs combining smaller
 amounts, and at most two outputs: one for the payment, and one returning
 the change, if any, back to the sender.
 
-\begin{figure}
+\begin{figure}[!h]
 \centering
-\includegraphics{combining-splitting.png}
-\caption{}
+\includegraphics[width=0.3725\linewidth]{combining-splitting.png}
+
 \end{figure}
 
 It should be noted that fan-out, where a transaction depends on several
@@ -354,23 +273,13 @@ transactions, and those transactions depend on many more, is not a
 problem here. There is never the need to extract a complete standalone
 copy of a transaction's history.
 
-\subsection{Privacy}\label{privacy}
+\section{Privacy}\label{privacy}
 
-The traditional banking model achieves a level of privacy by limiting
-access to information to the parties involved and the trusted third
-party. The necessity to announce all transactions publicly precludes
-this method, but privacy can still be maintained by breaking the flow of
-information in another place: by keeping public keys anonymous. The
-public can see that someone is sending an amount to someone else, but
-without information linking the transaction to anyone. This is similar
-to the level of information released by stock exchanges, where the time
-and size of individual trades, the ``tape'', is made public, but without
-telling who the parties were.
+The traditional banking model achieves a level of privacy by limiting access to information to the parties involved and the trusted third party. The necessity to announce all transactions publicly precludes this method, but privacy can still be maintained by breaking the flow of information in another place: by keeping public keys anonymous. The public can see that someone is sending an amount to someone else, but without information linking the transaction to anyone. This is similar to the level of information released by stock exchanges, where the time and size of individual trades, the ``tape'', is made public, but without telling who the parties were.
 
-\begin{figure}
+\begin{figure}[!h]
 \centering
-\includegraphics{privacy.png}
-\caption{}
+\includegraphics[width=0.75\linewidth]{privacy.png}
 \end{figure}
 
 As an additional firewall, a new key pair should be used for each
@@ -380,7 +289,7 @@ necessarily reveal that their inputs were owned by the same owner. The
 risk is that if the owner of a key is revealed, linking could reveal
 other transactions that belonged to the same owner.
 
-\subsection{Calculations}\label{calculations}
+\section{Calculations}\label{calculations}
 
 We consider the scenario of an attacker trying to generate an alternate
 chain faster than the honest chain. Even if this is accomplished, it
@@ -402,25 +311,25 @@ analogous to a Gambler's Ruin problem. Suppose a gambler with unlimited
 credit starts at a deficit and plays potentially an infinite number of
 trials to try to reach breakeven. We can calculate the probability he
 ever reaches breakeven, or that an attacker ever catches up with the
-honest chain, as follows\footnote{\begin{enumerate}
-  \def\labelenumi{\Alph{enumi}.}
-  \setcounter{enumi}{22}
-  \tightlist
-  \item
-    Feller, ``An introduction to probability theory and its
-    applications,'' 1957.
-  \end{enumerate}}:
+honest chain, as follows\cite{fel57}:
 
-p = probability an honest node finds the next block\\
-q = probability the attacker finds the next block\\
-qz = probability the attacker will ever catch up from z blocks behind
+\
 
-\[q_z = \left \{
-\begin{tabular}
-1 & if \ p \leqslant q \\
-\big(\frac{q}{p}\big)^z & if \ p > q \\
-\end{tabular}
-\right \}\]
+\(p\) = {\small probability an honest node finds the next block}
+
+\(q\) = {\small probability the attacker finds the next block}
+
+\(q_z\) = {\small probability the attacker will ever catch up from z blocks behind}
+
+\[
+    q_z = 
+\begin{cases}
+    1               & \text{if } p \leqslant q\\
+    \left(q/p\right)^z & \text{if } p > q
+\end{cases}
+\]
+
+\
 
 Given our assumption that p \textgreater{} q, the probability drops
 exponentially as the number of blocks the attacker has to catch up with
@@ -449,89 +358,103 @@ progress the attacker has made, but assuming the honest blocks took the
 average expected time per block, the attacker's potential progress will
 be a Poisson distribution with expected value:
 
-\[\lambda = z \frac{q}{p}\]
+\[\lambda = z \ \frac{q}{p}\]
+
+\
 
 To get the probability the attacker could still catch up now, we
 multiply the Poisson density for each amount of progress he could have
 made by the probability he could catch up from that point:
 
-\[\sum _{k=0}^\infty \frac{\lambda ^k e^{-\lambda}}{k!} \cdot \left \{
-\begin{tabular}
- \big(\frac{q}{p}\big)^{(z-p)} & if \ k \leqslant z \\
-1 & if \ k > z \\
-\end{tabular}
-\right \}\]
+\[\sum _{k=0}^\infty \frac{\lambda ^k e^{-\lambda}}{k!} \cdot 
+\begin{cases}
+    \left(q/p\right)^{(z-p)} & \text{if } k \leqslant z \\
+    1                     & \text{if } k > z
+\end{cases}
+\]
+
+\
 
 Rearranging to avoid summing the infinite tail of the
 distribution\ldots{}
 
-\[1 - \sum _{k=0}^z \frac{\lambda ^k e^{-\lambda}}{k!} (1 - (\frac{q}{p})^{(z-k)})\]
+\[1 - \sum _{k=0}^z \frac{\lambda ^k e^{-\lambda}}{k!} \left(1 - \left(q/p\right)^{(z-k)}\right)\]
+
+\
 
 Converting to C code\ldots{}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\PreprocessorTok{#include }\ImportTok{<math.h>}
-\DataTypeTok{double} \NormalTok{AttackerSuccessProbability(}\DataTypeTok{double} \NormalTok{q, }\DataTypeTok{int} \NormalTok{z)}
-\NormalTok{\{}
-    \DataTypeTok{double} \NormalTok{p = }\FloatTok{1.0} \NormalTok{- q;}
-    \DataTypeTok{double} \NormalTok{lambda = z * (q / p);}
-    \DataTypeTok{double} \NormalTok{sum = }\FloatTok{1.0}\NormalTok{;}
-    \DataTypeTok{int} \NormalTok{i, k;}
-    \ControlFlowTok{for} \NormalTok{(k = }\DecValTok{0}\NormalTok{; k <= z; k++)}
-    \NormalTok{\{}
-        \DataTypeTok{double} \NormalTok{poisson = exp(-lambda);}
-        \ControlFlowTok{for} \NormalTok{(i = }\DecValTok{1}\NormalTok{; i <= k; i++)}
-            \NormalTok{poisson *= lambda / i;}
-        \NormalTok{sum -= poisson * (}\DecValTok{1} \NormalTok{- pow(q / p, z - k));}
-    \NormalTok{\}}
-    \ControlFlowTok{return} \NormalTok{sum;}
-\NormalTok{\}}
-\end{Highlighting}
-\end{Shaded}
+\begin{lstlisting}[language=C]
+#include <math.h>
+double AttackerSuccessProbability(double q, int z)
+{
+    double p = 1.0 - q;
+    double lambda = z * (q / p);
+    double sum = 1.0;
+    int i, k;
+    for (k = 0; k <= z; k++)
+    {
+        double poisson = exp(-lambda);
+        for (i = 1; i <= k; i++)
+            poisson *= lambda / i;
+        sum -= poisson * (1 - pow(q / p, z - k));
+    }
+    return sum;
+}
+\end{lstlisting}
+
+\
 
 Running some results, we can see the probability drop off exponentially
 with z.
 
-q=0.1\\
-z=0 P=1.0000000\\
-z=1 P=0.2045873\\
-z=2 P=0.0509779\\
-z=3 P=0.0131722\\
-z=4 P=0.0034552\\
-z=5 P=0.0009137\\
-z=6 P=0.0002428\\
-z=7 P=0.0000647\\
-z=8 P=0.0000173\\
-z=9 P=0.0000046\\
+\
+
+\begin{verbatim}
+q=0.1
+z=0 P=1.0000000
+z=1 P=0.2045873
+z=2 P=0.0509779
+z=3 P=0.0131722
+z=4 P=0.0034552
+z=5 P=0.0009137
+z=6 P=0.0002428
+z=7 P=0.0000647
+z=8 P=0.0000173
+z=9 P=0.0000046
 z=10 P=0.0000012
 
-q=0.3\\
-z=0 P=1.0000000\\
-z=5 P=0.1773523\\
-z=10 P=0.0416605\\
-z=15 P=0.0101008\\
-z=20 P=0.0024804\\
-z=25 P=0.0006132\\
-z=30 P=0.0001522\\
-z=35 P=0.0000379\\
-z=40 P=0.0000095\\
-z=45 P=0.0000024\\
+
+q=0.3
+z=0 P=1.0000000
+z=5 P=0.1773523
+z=10 P=0.0416605
+z=15 P=0.0101008
+z=20 P=0.0024804
+z=25 P=0.0006132
+z=30 P=0.0001522
+z=35 P=0.0000379
+z=40 P=0.0000095
+z=45 P=0.0000024
 z=50 P=0.0000006
+\end{verbatim}
 
 Solving for P less than 0.1\%\ldots{}
 
-P \textless{} 0.001\\
-q=0.10 z=5\\
-q=0.15 z=8\\
-q=0.20 z=11\\
-q=0.25 z=15\\
-q=0.30 z=24\\
-q=0.35 z=41\\
-q=0.40 z=89\\
+\begin{verbatim}
+P < 0.001
+q=0.10 z=5
+q=0.15 z=8
+q=0.20 z=11
+q=0.25 z=15
+q=0.30 z=24
+q=0.35 z=41
+q=0.40 z=89
 q=0.45 z=340
+\end{verbatim}
 
-\subsection{Conclusion}\label{conclusion}
+
+\section{Conclusion}\label{conclusion}
 
 We have proposed a system for electronic transactions without relying on
 trust. We started with the usual framework of coins made from digital
@@ -550,4 +473,9 @@ expressing their acceptance of valid blocks by working on extending them
 and rejecting invalid blocks by refusing to work on them. Any needed
 rules and incentives can be enforced with this consensus mechanism.
 
-\subsection{References}\label{references}
+\newpage
+
+\printbibliography
+
+
+\end{document}

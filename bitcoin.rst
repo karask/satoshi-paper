@@ -318,12 +318,11 @@ honest chain, as follows [8]_:
 
 .. math::
 
-    q_z = \left \{
-    \begin{tabular}
-    1 & if \ p \leqslant q \\
-    \big(\frac{q}{p}\big)^z & if \ p > q \\
-    \end{tabular}
-    \right \}
+    q_z = 
+    \begin{cases}
+    1               & \text{if } p \leqslant q\\
+    \left(q/p\right)^z & \text{if } p > q
+    \end{cases}
 
 Given our assumption that p > q, the probability drops exponentially as
 the number of blocks the attacker has to catch up with increases. With
@@ -361,18 +360,17 @@ made by the probability he could catch up from that point:
 
 .. math::
 
-    \sum _{k=0}^\infty \frac{\lambda ^k e^{-\lambda}}{k!} \cdot \left \{
-    \begin{tabular}
-     \big(\frac{q}{p}\big)^{(z-p)} & if \ k \leqslant z \\
-    1 & if \ k > z \\
-    \end{tabular}
-    \right \}
+    \sum _{k=0}^\infty \frac{\lambda ^k e^{-\lambda}}{k!} \cdot 
+    \begin{cases}
+    \left(q/p\right)^{(z-p)} & \text{if } k \leqslant z \\
+    1                     & \text{if } k > z
+    \end{cases}
 
 Rearranging to avoid summing the infinite tail of the distribution...
 
 .. math::
 
-    1 - \sum _{k=0}^z \frac{\lambda ^k e^{-\lambda}}{k!} (1 - (\frac{q}{p})^{(z-k)})
+    1 - \sum _{k=0}^z \frac{\lambda ^k e^{-\lambda}}{k!} \left(1 - \left(q/p\right)^{(z-k)}\right)
 
 Converting to C code...
 
