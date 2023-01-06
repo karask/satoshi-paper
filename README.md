@@ -9,9 +9,9 @@ Marketplace
 Explore
  
 @lostleolotus 
-Your account has been flagged.
-Because of that, your profile is hidden from the public. If you believe this is a mistake, contact support to have your account status reviewed.
-lostleolotus
+Your account is the best on the net!
+
+
 /
 satoshi-paper-mbg198618
 Public
@@ -23,7 +23,7 @@ Projects
 Wiki
 Security
 Insights
-Settings
+
 satoshi-paper-mbg198618/bitcoin.tex
 @odanoburu
 odanoburu add .tex version and its pdf, correct rst equations, substitute bad i…
