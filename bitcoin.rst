@@ -64,7 +64,7 @@ previous transaction and the public key of the next owner and adding
 these to the end of the coin. A payee can verify the signatures to
 verify the chain of ownership.
 
-.. figure:: /img/transactions.png
+.. figure:: img/transactions.png
    :alt: transactions
 
 The problem of course is the payee can't verify that one of the owners
@@ -100,7 +100,7 @@ obviously, in order to get into the hash. Each timestamp includes the
 previous timestamp in its hash, forming a chain, with each additional
 timestamp reinforcing the ones before it.
 
-.. figure:: /img/timestamp.png
+.. figure:: img/timestamp.png
    :alt: timestamp server
 
 Proof-of-Work
@@ -122,7 +122,7 @@ changed without redoing the work. As later blocks are chained after it,
 the work to change the block would include redoing all the blocks after
 it
 
-.. figure:: /img/proof-of-work.png
+.. figure:: img/proof-of-work.png
    :alt: pow
 
 The proof-of-work also solves the problem of determining representation
@@ -207,7 +207,7 @@ hashed in a Merkle Tree [7]_ [2]_ [5]_, with only the root included in the
 block's hash. Old blocks can then be compacted by stubbing off branches
 of the tree. The interior hashes do not need to be stored.
 
-.. figure:: /img/reclaiming-disk.png
+.. figure:: img/reclaiming-disk.png
    :alt: disk
 
 A block header with no transactions would be about 80 bytes. If we
@@ -229,7 +229,7 @@ the transaction for himself, but by linking it to a place in the chain,
 he can see that a network node has accepted it, and blocks added after
 it further confirm the network has accepted it.
 
-.. figure:: /img/spv.png
+.. figure:: img/spv.png
    :alt: spv
 
 As such, the verification is reliable as long as honest nodes control
@@ -255,7 +255,7 @@ larger previous transaction or multiple inputs combining smaller
 amounts, and at most two outputs: one for the payment, and one returning
 the change, if any, back to the sender.
 
-.. figure:: /img/combining-splitting.png
+.. figure:: img/combining-splitting.png
    :alt: combining-splitting
 
 It should be noted that fan-out, where a transaction depends on several
@@ -277,7 +277,7 @@ to the level of information released by stock exchanges, where the time
 and size of individual trades, the "tape", is made public, but without
 telling who the parties were.
 
-.. figure:: /img/privacy.png
+.. figure:: img/privacy.png
    :alt: privacy
 
 As an additional firewall, a new key pair should be used for each
